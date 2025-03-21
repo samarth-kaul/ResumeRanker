@@ -42,13 +42,23 @@ def analyze_resume_with_llm(resume_text:str, job_description:str) -> dict:
     try:
         client = Groq(api_key=API_KEY)
         response = client.chat.completions.create(
-            model = "llama-3.3-70b-versatile",
-            message = [{'role' : 'user', 'content' : prompt}],
+            model = "llama3-8b-8192",
+            message = [{"role" : "user", "content" : prompt}],
             temperature = 0.7,
-            response_format = {'type' : 'json_object'}
+            response_format = {"type" : "json_object"}
         )
         result = response.choices[0].message.content
         return json.loads(result)
     
     except Exception as e:
         print(e)
+
+
+def process_resume(pdf_path, job_description):
+    try:
+        resume_text = extract_text_ftom_pdf(pdf_path)
+        data = analyze_resume_with_llm(resume_text, job_description)
+        return data
+    except Exception as e:
+        print(e)
+        return None

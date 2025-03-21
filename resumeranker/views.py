@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import JobDescription, Resume
 from .serializer import JobDescriptionSerializer, ResumeSerializer
+from .analyzer import process_resume
 
 class JobDescriptionAPI(APIView):
     def get(self, request):
@@ -38,7 +39,8 @@ class AnalyzeResumeAPI(APIView):
             _data = serialzier.data
             resume_instance = Resume.objects.get(id = _data['id'])
             resume_path = resume_instance.resume.path
-            print(resume_path)
+            data = process_resume(resume_path, JobDescription.objects.get(id = data.get('job_description')).job_description)
+            # print(resume_path)
             return Response({
                         'status' : True,
                         'message' : 'Resume Analyzed!',
