@@ -7,6 +7,9 @@ from .models import JobDescription, Resume
 from .serializer import JobDescriptionSerializer, ResumeSerializer
 from .analyzer import process_resume
 
+def index(request):
+    return render(request, "index.html")
+
 class JobDescriptionAPI(APIView):
     def get(self, request):
         queryset = JobDescription.objects.all()
@@ -44,7 +47,7 @@ class AnalyzeResumeAPI(APIView):
             return Response({
                         'status' : True,
                         'message' : 'Resume Analyzed!',
-                        'data' : {}
+                        'data' : data
                     })
     
         except Exception as e:
