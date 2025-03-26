@@ -1,48 +1,11 @@
-/* body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    text-align: center;
-}
-
-.container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background: #f9f9f9;
-}
-
-h2 {
-    margin-bottom: 20px;
-}
-
-input, select, button {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 10px;
-}
-
-#loading {
-    margin-top: 10px;
-    color: blue;
-}
-
-#results {
-    margin-top: 20px;
-    font-weight: bold;
-} */
-
-
-/* styles.css */
-
+/* Reset and Box Sizing */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Body Styling */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
@@ -52,6 +15,7 @@ body {
     height: 100vh;
 }
 
+/* Main Container */
 .container {
     background-color: white;
     padding: 20px;
@@ -61,21 +25,26 @@ body {
     text-align: center;
 }
 
+/* Heading */
 h1 {
     margin-bottom: 20px;
     font-size: 24px;
 }
 
+/* Form Group */
 .form-group {
     margin-bottom: 20px;
+    text-align: left;
 }
 
+/* Labels */
 label {
     display: block;
     font-weight: bold;
     margin-bottom: 8px;
 }
 
+/* Select and File Input */
 select,
 input[type="file"] {
     width: 100%;
@@ -85,10 +54,12 @@ input[type="file"] {
     border-radius: 4px;
 }
 
+/* Button */
 button {
+    width: 100%;
     background-color: #4CAF50;
     color: white;
-    padding: 10px 20px;
+    padding: 10px;
     border: none;
     font-size: 16px;
     border-radius: 4px;
@@ -99,12 +70,73 @@ button:hover {
     background-color: #45a049;
 }
 
+/* Loader Styling */
+.loader {
+    display: none;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #ccc;
+    border-top: 4px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Result Section */
 .result {
     margin-top: 20px;
-    font-size: 16px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: left;
     display: none;
 }
 
+/* Result Text */
+.result p {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+/* List Styling */
+.result ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.result ul li {
+    padding: 8px;
+    background-color: #e9ecef;
+    margin: 5px 0;
+    border-radius: 3px;
+}
+
+/* Rank & Experience Styling */
+.result .rank,
+.result .experience {
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+/* Project Category Styling */
+.result .project-category {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* Error Message */
 .error {
     color: red;
     font-weight: bold;

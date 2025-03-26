@@ -7,6 +7,7 @@
 {% block content %}
     <h1>Resume Analysis</h1>
 
+    <!-- Job Selection -->
     <div class="form-group">
         <label for="job-description">Select Job Description</label>
         <select id="job-description" name="job_description">
@@ -14,47 +15,60 @@
         </select>
     </div>
 
+    <!-- Resume Upload -->
     <div class="form-group">
         {% csrf_token %}
         <label for="resume-upload">Upload Resume</label>
         <input type="file" id="resume-upload" name="resume" accept=".pdf" />
     </div>
 
-    <button id="submit-btn">Submit Resume</button>
+    <!-- Submit Button -->
+    <button id="submit-btn">
+        Submit Resume
+        <span id="submit-loader" class="loader" style="display: none;"></span>
+    </button>
 
-    <div id="result" class="result">
-        <!-- Result will be displayed here after submission -->
+    <!-- Loader -->
+    <div id="loader" class="loader" style="display: none;">
+        <div class="spinner"></div>
+        <p>Analyzing Resume...</p>
+    </div>
+
+    <!-- Results -->
+    <div id="result" class="result" style="display: none;">
+        <h2>Analysis Result</h2>
+
+        <p><strong>Rank:</strong> <span id="rank"></span></p>
+        <p><strong>Total Experience:</strong> <span id="total_experience"></span> years</p>
+
+        <div>
+            <strong>Core Skills:</strong>
+            <ul id="core-skills-list"></ul>
+        </div>
+
+        <div>
+            <strong>Additional Skills:</strong>
+            <ul id="additional-skills-list"></ul>
+        </div>
+
+        <div>
+            <strong>Project Classifications:</strong>
+            <ul id="project-category-list"></ul>
+        </div>
+
+        <div>
+            <strong>Education:</strong>
+            <ul id="education-list"></ul>
+        </div>
+
+        <div>
+            <strong>Missing Skills:</strong>
+            <ul id="missing-skills-list"></ul>
+        </div>
+
+        <div>
+            <strong>Experience Gaps:</strong>
+            <ul id="experience-gaps-list"></ul>
+        </div>
     </div>
 {% endblock %}
-
-
-
-
-{% comment %} {% extends "base.html" %}
-
-{% load static %}
-
-{% block title %}Upload Resume{% endblock %}
-
-{% block content %}
-<div class="container">
-    <h2>Upload Your Resume</h2>
-
-    <label for="jobDescription">Enter Job Description:</label>
-    <textarea id="jobDescription" name="jobDescription" rows="5" required placeholder="Type the job description here..."></textarea>
-
-    <form id="resumeForm" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" id="resumeInput" name="resume" accept=".pdf,.doc,.docx" required>
-        <button type="submit">Submit</button>
-    </form>
-
-    <div id="loading" style="display: none;">Analyzing... Please wait.</div>
-    <div id="results"></div>
-</div>
-{% endblock %}
-
-{% block scripts %}
-<script src="{% static 'js/script.js' %}"></script>
-{% endblock %}
- {% endcomment %}

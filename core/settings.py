@@ -126,7 +126,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # For development:
-STATICFILES_DIRS = [BASE_DIR / 'static']  # Directories where static files are stored
+STATICFILES_DIRS = [BASE_DIR / 'resumeranker/static']  # Directories where static files are stored
 
 # For production (use only one, not both):
 # STATIC_ROOT = BASE_DIR / 'staticfiles'  # This is where static files will be collected for production

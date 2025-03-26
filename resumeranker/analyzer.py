@@ -15,43 +15,118 @@ def extract_text_from_pdf(pdf_path):
 # API_KEY = "enter your api key here (you can get from groq cloud console)"
 API_KEY = "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"
 
-def analyze_resume_with_llm(resume_text:str, job_description:str)->dict:
+def analyze_resume_with_llm(resume_text: str, job_description: str) -> dict:
     prompt = f"""
-    You are an AI assistance that analyzes resumes for a software engineering job application.
-    Given a resume and a job description, extract the following details:
+    You are an AI assistant specializing in resume analysis for job applications.
+    Your task is to evaluate the given resume against a specific job description and extract relevant details.
 
-    1) Identify all skills mentioned in the resume.
-    2) Calculate the total years of experience.
-    3) Categorize the projects based on the domain (e.g, AI, Web Development, Cloud etc).
-    4) Rank the resume relevance to the job description on a scale of 0 to 100.
+    **Instructions:**  
+    - Identify and extract only the most relevant information.
+    - Match skills and experience based on the job description.
+    - Provide a structured output in **valid JSON format**.
 
-    Resume:
-    {resume_text}
+    **Analysis Tasks:**  
+    1️⃣ **Skills Matching:**  
+       - Identify all **technical**, **soft**, and **domain-specific** skills in the resume.  
+       - Categorize them as **Core Skills** (highly relevant to the job) and **Additional Skills** (useful but not critical).  
+       
+    2️⃣ **Experience Analysis:**  
+       - Calculate the **total years of experience** from work history.  
+       - Identify the **most relevant job positions** that align with the job description.  
+       - Extract **job titles, company names, and duration** for each relevant role.  
 
-    Job Description
-    {job_description}
+    3️⃣ **Project Classification:**  
+       - Categorize **projects** based on their domain (e.g., AI, Web Development, Finance, Healthcare, etc.).  
+       - For each project, extract:  
+         - **Title**
+         - **Technologies Used**
+         - **Role in Project**
+         - **Key Achievements**  
+       
+    4️⃣ **Education & Certifications:**  
+       - Extract **degrees earned**, including university names and graduation years.  
+       - Identify **relevant certifications** related to the job (e.g., AWS Certified, PMP, etc.).  
 
-    Provide the output in valid JSON format JSON format with this structure:
+    5️⃣ **Resume-Job Relevance Ranking:**  
+       - Assign a **Relevance Score (0-100%)** based on how well the resume matches the job description.  
+       - Use the following factors:
+         - **Skill Match (%)**
+         - **Experience Relevance (%)**
+         - **Project Alignment (%)**
+         - **Education Match (%)**  
+
+    6️⃣ **Recommendations for Improvement:**  
+       - Suggest **missing skills** that could enhance the applicant’s chances.  
+       - Identify **gaps in experience** or areas for improvement.  
+
+    ---  
+    **Input Data:**  
+    - **Resume:**  
+      ```
+      {resume_text}
+      ```
+    - **Job Description:**  
+      ```
+      {job_description}
+      ```
+
+    ---  
+    **Output JSON Format:**  
+    ```json
     {{
-        "rank" : "<percentage>",
-        "skills" : ["skill1", "skill2", "skill3", "skill4",......],
-        "total_experience" : "<number of years>",
-        "project_category" : ["category1", "category2", "category3",.....>]
+        "rank": <percentage>,
+        "skill_match": <percentage>,
+        "experience_relevance": <percentage>,
+        "project_alignment": <percentage>,
+        "education_match": <percentage>,
+        "core_skills": ["skill1", "skill2", "skill3", ...],
+        "additional_skills": ["skill1", "skill2", ...],
+        "total_experience": <number_of_years>,
+        "relevant_experience": [
+            {{
+                "job_title": "Title",
+                "company": "Company Name",
+                "duration": "X years/months"
+            }},
+            ...
+        ],
+        "project_classification": [
+            {{
+                "title": "Project Name",
+                "domain": "Project Category",
+                "technologies": ["Tech1", "Tech2", ...],
+                "role": "Role in Project",
+                "achievements": ["Achievement1", "Achievement2"]
+            }},
+            ...
+        ],
+        "education": [
+            {{
+                "degree": "Degree Name",
+                "institution": "University Name",
+                "year": "Year of Completion"
+            }},
+            ...
+        ],
+        "certifications": ["Certification1", "Certification2", ...],
+        "missing_skills": ["Suggested Skill1", "Suggested Skill2"],
+        "experience_gaps": ["Gap1", "Gap2"]
     }}
+    ```
+    Ensure that the JSON output is structured correctly and contains **relevant, accurate** insights.
     """
 
     try:
         client = Groq(api_key=API_KEY)
         response = client.chat.completions.create(
-            model = "llama3-8b-8192",
-            # model = "llama-3.3-70b-versatile",
-            messages = [{"role" : "user", "content" : prompt}],
-            temperature = 0.7,
-            response_format = {"type" : "json_object"}
+            model="llama3-8b-8192",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            response_format={"type": "json_object"}
         )
         result = response.choices[0].message.content
         return json.loads(result)
-    
+
     except Exception as e:
         print(e)
 
@@ -77,122 +152,48 @@ def process_resume(pdf_path, job_description):
 
 
 
-# SAMPLE PROMPT (supposed to be more efficient)
+# SAMPLE PROMPT (this is the original older prompt)
 
-# def analyze_resume_with_llm(resume_text: str, job_description: str) -> dict:
+# def analyze_resume_with_llm(resume_text:str, job_description:str)->dict:
 #     prompt = f"""
-#     You are an AI assistant specializing in resume analysis for job applications.
-#     Your task is to evaluate the given resume against a specific job description and extract relevant details.
+#     You are an AI assistance that analyzes resumes for a software engineering job application.
+#     Given a resume and a job description, extract the following details:
 
-#     **Instructions:**  
-#     - Identify and extract only the most relevant information.
-#     - Match skills and experience based on the job description.
-#     - Provide a structured output in **valid JSON format**.
+#     1) Identify all skills mentioned in the resume.
+#     2) Calculate the total years of experience.
+#     3) Categorize the projects based on the domain (e.g, AI, Web Development, Cloud etc).
+#     4) Rank the resume relevance to the job description on a scale of 0 to 100.
 
-#     **Analysis Tasks:**  
-#     1️⃣ **Skills Matching:**  
-#        - Identify all **technical**, **soft**, and **domain-specific** skills in the resume.  
-#        - Categorize them as **Core Skills** (highly relevant to the job) and **Additional Skills** (useful but not critical).  
-       
-#     2️⃣ **Experience Analysis:**  
-#        - Calculate the **total years of experience** from work history.  
-#        - Identify the **most relevant job positions** that align with the job description.  
-#        - Extract **job titles, company names, and duration** for each relevant role.  
+#     Resume:
+#     {resume_text}
 
-#     3️⃣ **Project Classification:**  
-#        - Categorize **projects** based on their domain (e.g., AI, Web Development, Finance, Healthcare, etc.).  
-#        - For each project, extract:  
-#          - **Title**
-#          - **Technologies Used**
-#          - **Role in Project**
-#          - **Key Achievements**  
-       
-#     4️⃣ **Education & Certifications:**  
-#        - Extract **degrees earned**, including university names and graduation years.  
-#        - Identify **relevant certifications** related to the job (e.g., AWS Certified, PMP, etc.).  
+#     Job Description
+#     {job_description}
 
-#     5️⃣ **Resume-Job Relevance Ranking:**  
-#        - Assign a **Relevance Score (0-100%)** based on how well the resume matches the job description.  
-#        - Use the following factors:
-#          - **Skill Match (%)**
-#          - **Experience Relevance (%)**
-#          - **Project Alignment (%)**
-#          - **Education Match (%)**  
-
-#     6️⃣ **Recommendations for Improvement:**  
-#        - Suggest **missing skills** that could enhance the applicant’s chances.  
-#        - Identify **gaps in experience** or areas for improvement.  
-
-#     ---  
-#     **Input Data:**  
-#     - **Resume:**  
-#       ```
-#       {resume_text}
-#       ```
-#     - **Job Description:**  
-#       ```
-#       {job_description}
-#       ```
-
-#     ---  
-#     **Output JSON Format:**  
-#     ```json
+#     Provide the output in valid JSON format JSON format with this structure:
 #     {{
-#         "rank": <percentage>,
-#         "skill_match": <percentage>,
-#         "experience_relevance": <percentage>,
-#         "project_alignment": <percentage>,
-#         "education_match": <percentage>,
-#         "core_skills": ["skill1", "skill2", "skill3", ...],
-#         "additional_skills": ["skill1", "skill2", ...],
-#         "total_experience": <number_of_years>,
-#         "relevant_experience": [
-#             {{
-#                 "job_title": "Title",
-#                 "company": "Company Name",
-#                 "duration": "X years/months"
-#             }},
-#             ...
-#         ],
-#         "project_classification": [
-#             {{
-#                 "title": "Project Name",
-#                 "domain": "Project Category",
-#                 "technologies": ["Tech1", "Tech2", ...],
-#                 "role": "Role in Project",
-#                 "achievements": ["Achievement1", "Achievement2"]
-#             }},
-#             ...
-#         ],
-#         "education": [
-#             {{
-#                 "degree": "Degree Name",
-#                 "institution": "University Name",
-#                 "year": "Year of Completion"
-#             }},
-#             ...
-#         ],
-#         "certifications": ["Certification1", "Certification2", ...],
-#         "missing_skills": ["Suggested Skill1", "Suggested Skill2"],
-#         "experience_gaps": ["Gap1", "Gap2"]
+#         "rank" : "<percentage>",
+#         "skills" : ["skill1", "skill2", "skill3", "skill4",......],
+#         "total_experience" : "<number of years>",
+#         "project_category" : ["category1", "category2", "category3",.....>]
 #     }}
-#     ```
-#     Ensure that the JSON output is structured correctly and contains **relevant, accurate** insights.
 #     """
 
 #     try:
 #         client = Groq(api_key=API_KEY)
 #         response = client.chat.completions.create(
-#             model="llama3-8b-8192",
-#             messages=[{"role": "user", "content": prompt}],
-#             temperature=0.7,
-#             response_format={"type": "json_object"}
+#             model = "llama3-8b-8192",
+#             # model = "llama-3.3-70b-versatile",
+#             messages = [{"role" : "user", "content" : prompt}],
+#             temperature = 0.7,
+#             response_format = {"type" : "json_object"}
 #         )
 #         result = response.choices[0].message.content
 #         return json.loads(result)
-
+    
 #     except Exception as e:
 #         print(e)
+
 
 
 
